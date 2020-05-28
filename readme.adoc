@@ -1,0 +1,55 @@
+= Checking file associations with Powershell
+
+== Mapping HKCR
+
+In the case of browser extensions the settings are probably in `HKEY_CLASSES_ROOT` which
+is not mapped as a PSDrive by default.
+
+----
+New-PSDrive -PSProvider registry -Root HKEY_CLASSES_ROOT -Name HKCR
+----
+
+
+== System File Association
+
+----
+cd HKCR:\.html
+get-itemproperty -path .
+cd HKCR:\htmlfile
+dir 
+get-itemproperty -path .
+----
+
+== User (Override) File Association
+
+----
+cd HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.html\UserChoice
+----
+
+----
+get-itemproperty -path .
+----
+
+== Check user ProgIds
+
+----
+cd HKCU:\SOFTWARE\classes
+----
+
+Look for the ProgID using dir - for example:
+
+----
+dir chromeHTML
+----
+
+**This may not exist**
+
+== Checking the root progid
+
+If the user ProgID does not exist, it may be found directly in `HKEY_CLASSES_ROOT`:
+
+----
+cd HKCR:\ChromeHTML\
+dir
+----
+
